@@ -1,68 +1,115 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Paleta HealthTech */
+  --primary: #0056D2;       /* Azul Institucional - Confianza */
+  --primary-dark: #003F9A;
+  --secondary: #00D2A0;     /* Verde Digital - Salud y Modernidad */
+  --bg-light: #F8FAFC;      /* Fondo suave */
+  --text-main: #1E293B;     /* Texto legible */
+  --text-muted: #64748B;    /* Texto secundario */
+  --white: #ffffff;
+  
+  /* Espaciado y Bordes */
+  --radius: 12px;
+  --container-width: 1200px;
+  
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-main);
+  background-color: var(--bg-light);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { overflow-x: hidden; }
+
+/* Utilidades Layout */
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+/* Tipografía */
+h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+h1 { font-size: clamp(2.5rem, 5vw, 4rem); color: var(--text-main); }
+h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+p { font-size: 1.125rem; color: var(--text-muted); }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+/* Botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  border: none;
+  font-size: 1rem;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.btn-primary {
+  background: var(--primary);
+  color: var(--white);
+  box-shadow: 0 4px 14px 0 rgba(0, 86, 210, 0.39);
 }
+.btn-primary:hover { transform: translateY(-2px); background: var(--primary-dark); }
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+.btn-secondary:hover { background: var(--bg-light); }
+
+/* Estilos Específicos de Secciones */
+.card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+.card:hover { transform: translateY(-5px); border-color: var(--primary); }
+
+.icon-box {
+  width: 60px;
+  height: 60px;
+  background: #E0F2FE;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+}
+
+/* Navegación */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 0;
+}
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo { font-weight: 800; font-size: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+
+section { padding: 5rem 0; }
