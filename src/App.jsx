@@ -12,6 +12,7 @@ import imgProb3 from './assets/problem/tiempoPerdido.avif';
 import imgSol1 from './assets/solution/pacientes.avif';   
 import imgSol2 from './assets/solution/gestionPacientes.avif';  
 import imgSol3 from './assets/solution/recetaDigital.avif';
+import logoImg from '../public/logo2.1.png';
 
 // --- DATOS DEL CONTENIDO (Fácil de editar) ---
 const FEATURES = [
@@ -60,8 +61,26 @@ const FadeIn = ({ children, delay = 0 }) => (
 const Navbar = () => (
   <nav>
     <div className="container nav-content">
-      <div className="logo"><Activity /> Medlify</div>
-      <button className="btn btn-primary" style={{padding: '0.5rem 1.5rem'}}>Demo</button>
+      {/* LOGO DE LA PLATAFORMA */}
+      <div className="logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <img 
+          src={logoImg} 
+          alt="MedEc Digital Logo" 
+          style={{ 
+            height: '40px',    /* Altura fija para mantener el orden */
+            width: 'auto',     /* El ancho se ajusta solo */
+            objectFit: 'contain' 
+          }} 
+        />
+        {/* Si tu logo ya tiene letras, puedes borrar este texto de abajo */}
+        <span style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--primary)' }}>
+          Medlify
+        </span>
+      </div>
+
+      <button className="btn btn-primary" style={{padding: '0.5rem 1.5rem'}}>
+        Demo
+      </button>
     </div>
   </nav>
 );
