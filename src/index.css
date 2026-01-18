@@ -113,3 +113,87 @@ nav {
 .logo { font-weight: 800; font-size: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
 
 section { padding: 5rem 0; }
+
+/* --- ESTILOS DEL NAVBAR Y NAVEGACIÓN --- */
+
+/* 1. Scroll Suave para toda la página */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 2. Ajuste para que el Navbar fijo no tape los títulos al hacer clic */
+section {
+  scroll-margin-top: 100px; /* Ajusta esto a la altura de tu navbar */
+}
+
+/* 3. Efecto Glassmorphism */
+.navbar-glass {
+  background: rgba(255, 255, 255, 0.85); /* Blanco translúcido */
+  backdrop-filter: blur(12px);           /* El efecto de borroso detrás */
+  -webkit-backdrop-filter: blur(12px);   /* Soporte para Safari */
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+/* 4. Enlaces del Nav */
+.nav-link {
+  color: var(--text-muted);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+  background: rgba(0, 86, 210, 0.05);
+}
+
+/* Estado Activo (Cuando estás en esa sección) */
+.nav-link.active {
+  color: var(--primary);
+  font-weight: 700;
+  background: rgba(0, 86, 210, 0.1);
+}
+
+/* 5. Menú Móvil (Oculto en desktop) */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 70px; /* Altura del navbar */
+  left: 0;
+  width: 100%;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transform: translateY(-150%); /* Oculto arriba por defecto */
+  transition: transform 0.3s ease-in-out;
+  z-index: 999;
+}
+
+.mobile-menu-overlay.open {
+  transform: translateY(0);
+}
+
+/* Ocultar botón de menú en escritorio */
+.menu-toggle {
+  display: none;
+}
+
+/* Media Query para Móviles */
+@media (max-width: 768px) {
+  .desktop-links { display: none; }
+  .menu-toggle { display: block; background: none; border: none; color: var(--text-main); }
+  .btn-header-desktop { display: none; } /* Ocultar CTA del header en móvil si quieres ahorrar espacio */
+}

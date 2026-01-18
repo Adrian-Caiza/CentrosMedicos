@@ -3,15 +3,17 @@ import { motion } from 'framer-motion';
 import { 
   Calendar, Users, FileText, Activity, 
   ArrowRight, CheckCircle, Clock, Heart, 
-  Smartphone, MapPin, ShieldCheck
+  Smartphone, MapPin, ShieldCheck,
+  Building2, Stethoscope, User, Check
 } from 'lucide-react';
+import { Menu, X, Mail, MessageCircle } from 'lucide-react';
 import heroImage from './assets/Netlify.webp';
-import imgProb1 from './assets/problem/salasColapsadas.avif'; 
-import imgProb2 from './assets/problem/papelesPerdidos.avif'; 
-import imgProb3 from './assets/problem/tiempoPerdido.avif';
-import imgSol1 from './assets/solution/pacientes.avif';   
-import imgSol2 from './assets/solution/gestionPacientes.avif';  
-import imgSol3 from './assets/solution/recetaDigital.avif';
+import imgProb1 from '../public/problem/salasColapsadas.avif'; 
+import imgProb2 from '../public/problem/papelesPerdidos.avif'; 
+import imgProb3 from '../public/problem/tiempoPerdido.avif';
+import imgSol1 from '../public/solution/pacientes.avif';   
+import imgSol2 from '../public/solution/gestionPacientes.avif';  
+import imgSol3 from '../public/solution/recetaDigital.avif';
 import logoImg from '../public/logo2.1.png';
 
 // --- DATOS DEL CONTENIDO (Fácil de editar) ---
@@ -19,17 +21,20 @@ const FEATURES = [
   {
     img: imgSol1,
     title: "Adiós a las filas",
-    desc: "Tus pacientes eligen el horario desde su casa. Sin madrugadas, sin aglomeraciones en la entrada."
+    desc: "Tus pacientes eligen el horario desde su casa. Sin madrugadas, sin aglomeraciones en la entrada.",
+    
   },
   {
     img: imgSol2,
     title: "Gestión en la Nube",
-    desc: "Accede a la historia clínica y datos de tus pacientes desde cualquier dispositivo, 100% seguro."
+    desc: "Accede a la historia clínica y datos de tus pacientes desde cualquier dispositivo, 100% seguro.",
+    
   },
   {
     img: imgSol3,
     title: "Recetas al WhatsApp",
-    desc: "Envía la receta digital firmada electrónicamente directo al celular del paciente. Cero papel."
+    desc: "Envía la receta digital firmada electrónicamente directo al celular del paciente. Cero papel.",
+    
   }
 ];
 
@@ -58,37 +63,110 @@ const FadeIn = ({ children, delay = 0 }) => (
   </motion.div>
 );
 
-const Navbar = () => (
-  <nav>
-    <div className="container nav-content">
-      {/* LOGO DE LA PLATAFORMA */}
-      <div className="logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <img 
-          src={logoImg} 
-          alt="MedEc Digital Logo" 
-          style={{ 
-            height: '40px',    /* Altura fija para mantener el orden */
-            width: 'auto',     /* El ancho se ajusta solo */
-            objectFit: 'contain' 
-          }} 
-        />
-        {/* Si tu logo ya tiene letras, puedes borrar este texto de abajo */}
-        <span style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--primary)' }}>
-          Medlify
-        </span>
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('hero');
+
+  // Definimos los enlaces de navegación
+  const navLinks = [
+    { id: 'hero', label: 'Inicio' },
+    { id: 'problema', label: 'Problema' },
+    { id: 'solucion', label: 'Solución' },
+    { id: 'modelo', label: 'Planes' },
+    { id: 'impacto', label: 'Impacto' },
+    { id: 'contacto', label: 'Contacto' },
+  ];
+
+  // Lógica para detectar qué sección está visible (Scroll Spy)
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navLinks.map(link => document.getElementById(link.id));
+      const scrollPosition = window.scrollY + 150; // Offset para mejor precisión
+
+      sections.forEach(section => {
+        if (section && 
+            section.offsetTop <= scrollPosition && 
+            (section.offsetTop + section.offsetHeight) > scrollPosition) {
+          setActiveSection(section.id);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
+  // Función para hacer scroll suave al hacer click (y cerrar menú móvil)
+  const scrollToSection = (id) => {
+    setIsOpen(false); // Cerrar menú móvil si está abierto
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <nav className="navbar-glass">
+      <div className="container nav-content" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        
+        {/* LOGO */}
+        <div className="logo" onClick={() => scrollToSection('hero')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img src={logoImg} alt="MedEc Logo" style={{ height: '40px', width: 'auto' }} />
+          <span style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--primary)' }}>Medlify</span>
+        </div>
+
+        {/* ENLACES DESKTOP */}
+        <div className="desktop-links" style={{ display: 'flex', gap: '0.5rem' }}>
+          {navLinks.map((link) => (
+            <a 
+              key={link.id}
+              onClick={() => scrollToSection(link.id)}
+              className={`nav-link ${activeSection === link.id ? 'active' : ''}`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+
+        {/* BOTÓN CTA & MENU MÓVIL */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button className="btn btn-primary btn-header-desktop" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem' }}>
+            Solicitar Demo
+          </button>
+          
+          {/* Botón Hamburguesa (Solo Móvil) */}
+          <button className="menu-toggle" onClick={toggleMenu}>
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
       </div>
 
-      <button className="btn btn-primary" style={{padding: '0.5rem 1.5rem'}}>
-        Demo
-      </button>
-    </div>
-  </nav>
-);
+      {/* MENÚ DESPLEGABLE MÓVIL */}
+      <div className={`mobile-menu-overlay ${isOpen ? 'open' : ''}`}>
+        {navLinks.map((link) => (
+          <a 
+            key={link.id}
+            onClick={() => scrollToSection(link.id)}
+            className={`nav-link ${activeSection === link.id ? 'active' : ''}`}
+            style={{ fontSize: '1.2rem', textAlign: 'center', display: 'block' }}
+          >
+            {link.label}
+          </a>
+        ))}
+        <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>
+          Solicitar Demo
+        </button>
+      </div>
+    </nav>
+  );
+};
 
 // --- SECCIONES ---
 
 const Hero = () => (
-  <section style={{ paddingTop: '8rem', paddingBottom: '6rem', background: 'linear-gradient(180deg, #F0F9FF 0%, #F8FAFC 100%)' }}>
+  <section id="hero" style={{ paddingTop: '8rem', paddingBottom: '6rem', background: 'linear-gradient(180deg, #F0F9FF 0%, #F8FAFC 100%)' }}>
     <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'center' }}>
       <FadeIn>
         <div style={{ display: 'inline-block', padding: '0.5rem 1rem', background: '#DBEAFE', color: '#1E40AF', borderRadius: '20px', fontSize: '0.875rem', fontWeight: '600', marginBottom: '1.5rem' }}>
@@ -132,7 +210,7 @@ const Hero = () => (
 );
 
 const Problem = () => (
-  <section style={{ background: 'white' }}>
+  <section id="problema" style={{ background: 'white' }}>
     <div className="container">
       <FadeIn>
         <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 4rem' }}>
@@ -172,6 +250,7 @@ const Problem = () => (
                 <img 
                   src={item.img} 
                   alt={item.title} 
+                  loading="lazy"
                   style={{ 
                     width: '100%', 
                     height: '100%', 
@@ -228,6 +307,7 @@ const Solution = () => (
                 <img 
                   src={feat.img} 
                   alt={feat.title} 
+                  loading="lazy"
                   style={{ 
                     width: '100%', 
                     height: '100%', 
@@ -323,8 +403,146 @@ const CarouselMockup = () => {
   );
 };
 
+const BusinessModel = () => {
+  const tiers = [
+    {
+      title: "Centros Públicos",
+      subtitle: "Impacto Social",
+      icon: <Building2 size={32} />,
+      price: "Acceso Gratuito",
+      desc: "Democratizamos la salud digitalizando la atención primaria estatal.",
+      features: ["Agenda de citas básica", "Registro de pacientes", "Gestión de turnos", "Soporte técnico estándar"],
+      color: "#10B981", // Verde Esmeralda
+      bgColor: "#ECFDF5",
+      btnText: "Contactar Gobierno"
+    },
+    {
+      title: "Centros Privados",
+      subtitle: "Eficiencia & ROI",
+      icon: <Stethoscope size={32} />,
+      price: "Suscripción",
+      desc: "Plataforma integral para optimizar recursos y rentabilidad.",
+      features: ["Demo gratuita (30 días)", "Reportes avanzados de data", "Recetas digitales certificadas", "Marketing para el centro"],
+      color: "#0056D2", // Azul Institucional (Primary)
+      bgColor: "#EFF6FF",
+      btnText: "Iniciar Prueba Demo"
+    },
+    {
+      title: "Doctores Independientes",
+      subtitle: "Crecimiento",
+      icon: <User size={32} />,
+      price: "Freemium",
+      desc: "Comienza gratis y profesionaliza tu consultorio a tu ritmo.",
+      features: ["Plan Gratuito (hasta 50 citas)", "Agenda personal", "Historial clínico básico", "Upgrade a Plan Pro"],
+      color: "#6366F1", // Índigo Moderno
+      bgColor: "#EEF2FF",
+      btnText: "Crear Cuenta Gratis"
+    }
+  ];
+
+  return (
+    <section id="modelo" style={{ background: '#F8FAFC', padding: '6rem 0' }}>
+      <div className="container">
+        <FadeIn>
+          <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 4rem' }}>
+            <h2 style={{ color: 'var(--text-main)' }}>Acceso Justo y Modelo Sostenible</h2>
+            <p>Una arquitectura híbrida diseñada para financiar la expansión tecnológica mientras garantizamos el acceso universal a la salud.</p>
+          </div>
+        </FadeIn>
+
+        <div className="grid-3">
+          {tiers.map((tier, i) => (
+            <FadeIn key={i} delay={i * 0.15}>
+              <div className="card" style={{ 
+                height: '100%', 
+                padding: '2.5rem', 
+                borderTop: `6px solid ${tier.color}`,
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative'
+              }}>
+                
+                {/* Encabezado con Icono */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div style={{ 
+                    background: tier.bgColor, 
+                    color: tier.color, 
+                    padding: '12px', 
+                    borderRadius: '12px' 
+                  }}>
+                    {tier.icon}
+                  </div>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '1.25rem' }}>{tier.title}</h3>
+                    <span style={{ fontSize: '0.875rem', color: tier.color, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      {tier.subtitle}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Precio y Descripción */}
+                <div style={{ marginBottom: '2rem' }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-main)', marginBottom: '0.5rem' }}>
+                    {tier.price}
+                  </div>
+                  <p style={{ fontSize: '0.95rem', lineHeight: '1.5' }}>{tier.desc}</p>
+                </div>
+
+                {/* Lista de Features */}
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem 0', flex: 1 }}>
+                  {tier.features.map((feat, index) => (
+                    <li key={index} style={{ display: 'flex', alignItems: 'start', gap: '10px', marginBottom: '12px', fontSize: '0.9rem', color: '#475569' }}>
+                      <Check size={18} color={tier.color} style={{ minWidth: '18px', marginTop: '3px' }} />
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Botón */}
+                <button className="btn" style={{ 
+                  width: '100%', 
+                  background: tier.bgColor, 
+                  color: tier.color, 
+                  border: `1px solid ${tier.color}20`,
+                  fontWeight: '700'
+                }}>
+                  {tier.btnText}
+                </button>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        {/* Copy Final de Cierre */}
+        <FadeIn delay={0.4}>
+          <div style={{ 
+            marginTop: '5rem', 
+            textAlign: 'center', 
+            padding: '2rem', 
+            background: 'white', 
+            borderRadius: '16px',
+            border: '1px solid #e2e8f0',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+          }}>
+            <p style={{ 
+              fontSize: '1.25rem', 
+              fontWeight: '600', 
+              color: 'var(--primary)', 
+              marginBottom: 0,
+              fontStyle: 'italic'
+            }}>
+              “El sector privado impulsa la sostenibilidad, mientras el sector público garantiza el impacto social.”
+            </p>
+          </div>
+        </FadeIn>
+
+      </div>
+    </section>
+  );
+};
+
 const SocialImpact = () => (
-  <section style={{ background: 'white' }}>
+  <section id="impacto" style={{ background: 'white' }}>
     <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
       <Heart size={48} fill="#EF4444" color="#EF4444" style={{ marginBottom: '1rem' }} />
       <h2>Impacto Social en Ecuador</h2>
@@ -341,13 +559,70 @@ const SocialImpact = () => (
 );
 
 const Footer = () => (
-  <footer style={{ background: '#0f172a', color: 'white', padding: '4rem 0' }}>
+  <footer id="contacto" style={{ background: '#0f172a', color: 'white', padding: '5rem 0 3rem' }}>
     <div className="container" style={{ textAlign: 'center' }}>
-      <h2 style={{ color: 'white', marginBottom: '2rem' }}>¿Listo para transformar tu centro médico?</h2>
-      <button className="btn btn-primary" style={{ padding: '1.2rem 3rem', fontSize: '1.2rem' }}>
-        Solicitar Demo Gratuita
-      </button>
-      <div style={{ marginTop: '4rem', borderTop: '1px solid #334155', paddingTop: '2rem', fontSize: '0.9rem', color: '#94a3b8' }}>
+      
+      {/* --- SECCIÓN CTA PRINCIPAL --- */}
+      <div style={{ marginBottom: '4rem' }}>
+        <h2 style={{ color: 'white', marginBottom: '1.5rem' }}>¿Listo para transformar tu centro médico?</h2>
+        <p style={{ color: '#94a3b8', marginBottom: '2rem', maxWidth: '500px', margin: '0 auto 2rem' }}>
+          Únete a la red de salud digital más grande de Ecuador.
+        </p>
+        <button className="btn btn-primary" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
+          Solicitar Demo Gratuita
+        </button>
+      </div>
+
+      {/* LÍNEA DIVISORIA */}
+      <div style={{ borderTop: '1px solid #334155', width: '100%', maxWidth: '800px', margin: '0 auto 3rem' }}></div>
+
+      {/* --- SECCIÓN DE CONTACTO --- */}
+      <div style={{ marginBottom: '3rem' }}>
+        <h4 style={{ textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.85rem', color: '#64748b', marginBottom: '1.5rem' }}>
+          Contáctanos
+        </h4>
+        
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          gap: '2rem', 
+          flexWrap: 'wrap',
+          alignItems: 'center' 
+        }}>
+          {/* Botón Email */}
+          <a href="medlify@gmail.com" style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '10px', 
+            color: '#cbd5e1', 
+            textDecoration: 'none',
+            fontSize: '1rem',
+            transition: 'color 0.2s'
+          }} onMouseOver={(e) => e.currentTarget.style.color = 'white'} 
+             onMouseOut={(e) => e.currentTarget.style.color = '#cbd5e1'}>
+            <Mail size={20} />
+            medlify@gmail.com
+          </a>
+
+          {/* Botón WhatsApp */}
+          <a href="https://wa.me/593997273831" style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '10px', 
+            color: '#cbd5e1', 
+            textDecoration: 'none',
+            fontSize: '1rem',
+            transition: 'color 0.2s'
+          }} onMouseOver={(e) => e.currentTarget.style.color = '#4ade80'} /* Verde claro al pasar mouse */
+            onMouseOut={(e) => e.currentTarget.style.color = '#cbd5e1'}>
+            <MessageCircle size={20} />
+            +593 99 727 3831
+          </a>
+        </div>
+      </div>
+
+      {/* COPYRIGHT */}
+      <div style={{ fontSize: '0.85rem', color: '#475569' }}>
         © 2026 Medlify Ecuador. Todos los derechos reservados.
       </div>
     </div>
@@ -363,6 +638,7 @@ function App() {
       <Solution />
       <HowItWorks />
       <CarouselMockup />
+      <BusinessModel />
       <SocialImpact />
       <Footer />
     </>
