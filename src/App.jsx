@@ -15,6 +15,9 @@ import imgSol1 from '../public/solution/pacientes.avif';
 import imgSol2 from '../public/solution/gestionPacientes.avif';  
 import imgSol3 from '../public/solution/recetaDigital.avif';
 import logoImg from '../public/logo2.1.png';
+import imgMockup1 from '../public/img/UIusuario.avif';  // Vista Paciente (Celular)
+import imgMockup2 from '../public/img/UIdoctor.avif'; // Vista Médico (PC)
+import imgMockup3 from '../public/img/RecetaPDF.avif';
 
 // --- DATOS DEL CONTENIDO (Fácil de editar) ---
 const FEATURES = [
@@ -368,33 +371,135 @@ const HowItWorks = () => (
 );
 
 const CarouselMockup = () => {
-  // Simulación simple de carrusel automático
   const [active, setActive] = useState(0);
+
+  // Datos del Carrusel
+  const slides = [
+    {
+      img: imgMockup1,
+      title: "Vista del Paciente",
+      desc: "Reserva citas en 3 pasos desde cualquier dispositivo, sin descargar apps pesadas."
+    },
+    {
+      img: imgMockup2,
+      title: "Panel del Médico",
+      desc: "Gestiona tu agenda, bloquea horarios y revisa historiales en una interfaz limpia para PC o Tablet."
+    },
+    {
+      img: imgMockup3,
+      title: "Receta Electrónica",
+      desc: "Genera documentos PDF firmados automáticamente y envíalos por WhatsApp con un clic."
+    }
+  ];
+
+  // Cambio automático cada 4 segundos
   useEffect(() => {
-    const interval = setInterval(() => setActive(c => (c + 1) % 3), 3000);
+    const interval = setInterval(() => {
+      setActive((current) => (current + 1) % slides.length);
+    }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [slides.length]);
 
   return (
-    <section style={{ background: '#F8FAFC', textAlign: 'center' }}>
+    <section style={{ background: '#F8FAFC', padding: '6rem 0', textAlign: 'center' }}>
       <div className="container">
-        <h2 style={{ marginBottom: '3rem' }}>Diseñado para ser intuitivo</h2>
+        <FadeIn>
+          <h2 style={{ marginBottom: '1rem', color: 'var(--text-main)' }}>Diseñado para ser intuitivo</h2>
+          <p style={{ marginBottom: '3rem', color: 'var(--text-muted)' }}>
+            Una interfaz que entienden desde pacientes jóvenes hasta médicos mayores.
+          </p>
+        </FadeIn>
+        
+        {/* Contenedor del "Dispositivo" o Marco */}
         <div style={{ 
-          maxWidth: '800px', margin: '0 auto', height: '400px', 
-          background: 'white', borderRadius: '20px', 
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 10px 40px rgba(0,0,0,0.1)', position: 'relative', overflow: 'hidden'
+          maxWidth: '900px', 
+          margin: '0 auto', 
+          height: '500px', /* Aumentamos altura para que quepan bien las imágenes */
+          background: 'white', 
+          borderRadius: '24px', 
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)', 
+          position: 'relative', 
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column'
         }}>
-          {/* Aquí irían las imágenes reales */}
-          <div style={{ padding: '2rem' }}>
-             {active === 0 && <div className="animate-fade"><Smartphone size={64} color="var(--primary)"/><h3>Vista del Paciente</h3><p>Reserva en 3 clics</p></div>}
-             {active === 1 && <div className="animate-fade"><Calendar size={64} color="var(--secondary)"/><h3>Vista del Médico</h3><p>Agenda organizada</p></div>}
-             {active === 2 && <div className="animate-fade"><FileText size={64} color="#EF4444"/><h3>Receta Digital</h3><p>PDF automático</p></div>}
+          
+          {/* Área de Visualización (Imagen + Texto) */}
+          <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+            {/* Renderizado condicional con Animación */}
+            <motion.div
+              key={active} // La clave reinicia la animación al cambiar
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {/* Imagen del Mockup */}
+              <div style={{ 
+                flex: 1, 
+                width: '100%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                marginBottom: '1.5rem',
+                overflow: 'hidden'
+              }}>
+                <img 
+                  src={slides[active].img} 
+                  alt={slides[active].title} 
+                  style={{ 
+                    maxWidth: '100%', 
+                    maxHeight: '300px', // Altura máxima de la imagen para no tapar texto
+                    objectFit: 'contain', // Muestra la imagen completa sin recortar
+                    filter: 'drop-shadow(0 10px 15px rgba(0,0,0,0.1))' // Sombra suave a la imagen
+                  }} 
+                />
+              </div>
+
+              {/* Textos descriptivos */}
+              <div>
+                <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem', fontSize: '1.5rem' }}>
+                  {slides[active].title}
+                </h3>
+                <p style={{ maxWidth: '500px', margin: '0 auto', color: '#64748B' }}>
+                  {slides[active].desc}
+                </p>
+              </div>
+            </motion.div>
           </div>
           
-          <div style={{ position: 'absolute', bottom: '20px', display: 'flex', gap: '10px' }}>
-            {[0,1,2].map(i => (
-              <div key={i} style={{ width: '10px', height: '10px', borderRadius: '50%', background: i === active ? 'var(--primary)' : '#cbd5e1' }} />
+          {/* Controles de Puntos (Indicadores) */}
+          <div style={{ 
+            padding: '1.5rem', 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: '12px',
+            background: 'rgba(255,255,255,0.9)',
+            borderTop: '1px solid #f1f5f9'
+          }}>
+            {slides.map((_, i) => (
+              <button 
+                key={i} 
+                onClick={() => setActive(i)} // Permitir click manual
+                style={{ 
+                  width: i === active ? '30px' : '10px', // El activo es más largo
+                  height: '10px', 
+                  borderRadius: '10px', 
+                  border: 'none',
+                  background: i === active ? 'var(--primary)' : '#cbd5e1',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
+                }} 
+                aria-label={`Ver slide ${i + 1}`}
+              />
             ))}
           </div>
         </div>
